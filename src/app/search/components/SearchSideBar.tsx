@@ -1,36 +1,97 @@
-export default function SearchSideBar() {
-    return (
-      <div className="w-1/5">
-        <div className="border-b pb-4">
-          <h1 className="mb-2">Region</h1>
-          <p className="font-light text-reg">Toronto</p>
-          <p className="font-light text-reg">Ottawa</p>
-          <p className="font-light text-reg">Montreal</p>
-          <p className="font-light text-reg">Hamilton</p>
-          <p className="font-light text-reg">Kingston</p>
-          <p className="font-light text-reg">Niagara</p>
-        </div>
-        <div className="border-b pb-4 mt-3">
-          <h1 className="mb-2">Cuisine</h1>
-          <p className="font-light text-reg">Mexican</p>
-          <p className="font-light text-reg">Italian</p>
-          <p className="font-light text-reg">Chinese</p>
-        </div>
-        <div className="mt-3 pb-4">
-          <h1 className="mb-2">Price</h1>
-          <div className="flex">
-            <button className="border w-full text-reg font-light rounded-l p-2">
-              $
-            </button>
-            <button className="border-r border-t border-b w-full text-reg font-light p-2">
-              $$
-            </button>
-            <button className="border-r border-t border-b w-full text-reg font-light p-2 rounded-r">
-              $$$
-            </button>
-          </div>
+import Link from "next/link";
+// import PriceButtons from "./PriceButtons";
+// import SearchOptions from "./SearchOption";
+import { PRICE } from "@prisma/client";
+const prices = [
+  {
+    price: "cheap",
+    label: "$",
+  },
+  {
+    price: "regular",
+    label: "$$",
+  },
+  {
+    price: "expensive",
+    label: "$$$",
+  },
+];
+export default function SearchSideBar({
+  options,
+  searchParams,
+}: {
+  options: {
+    locations: { name: string }[];
+    cuisines: { name: string }[];
+  };
+  searchParams: {
+    city?: string;
+    cuisine?: string;
+    price?: PRICE;
+  };
+}) {
+  return (
+    <div className="w-1/5">
+      <div className="border-b pb-4">
+        <h1 className="mb-2">Region</h1>
+        {/* <SearchOptions param="city" data={options.locations} /> */}
+        {options.locations.map((loc) => (
+          <Link
+            href={{
+              pathname: "/search",
+              query: {
+                ...searchParams,
+                city: loc.name,
+              },
+            }}
+            key={loc.name}
+            className="font-light text-reg capitalize"
+          >
+            <p className="font-light text-reg capitalize">{loc.name}</p>
+          </Link>
+        ))}
+      </div>
+      <div className="border-b pb-4 mt-3">
+        <h1 className="mb-2">Cuisine</h1>
+        {/* <SearchOptions param="cuisine" data={options.cuisines} /> */}
+
+        {options.cuisines.map((cuisine) => (
+          <Link
+            href={{
+              pathname: "/search",
+              query: {
+                ...searchParams,
+                cuisine: cuisine.name,
+              },
+            }}
+            key={cuisine.name}
+            className="font-light capitalize text-reg"
+          >
+            <p className="font-light text-reg capitalize">{cuisine.name}</p>
+          </Link>
+        ))}
+      </div>
+      <div className="mt-3 pb-4">
+        <h1 className="mb-2">Price</h1>
+        <div className="flex">
+          {/* <PriceButtons /> */}
+          {prices.map(({ price, label }) => (
+            <Link
+              className="border-r border-t border-b w-full text-reg font-light p-2"
+              href={{
+                pathname: "/search",
+                query: {
+                  ...searchParams,
+                  price: price,
+                },
+              }}
+              key={price}
+            >
+              {label}
+            </Link>
+          ))}
         </div>
       </div>
-    );
+    </div>
+  );
 }
-

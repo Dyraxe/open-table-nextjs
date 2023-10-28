@@ -10,7 +10,7 @@ export interface RestaurantCardType {
   price: PRICE;
   slug: string;
 }
-
+// type Test = { id: number; name: string; main_image: string; images: string[]; description: string; open_time: string; close_time: string; slug: string; price: PRICE; location_id: number; cuisine_id: number; created_at: Date; updated_at: Date; }
 interface Restaurant {
   id: number;
   slug: string;
@@ -18,7 +18,20 @@ interface Restaurant {
   name: string;
   images: string[];
 }
+type Query = {
+  location?: {
+    name: {
+      equals: string;
+    };
+  };
 
+  cuisine?: {
+    name: {
+      equals: string;
+    };
+  };
+  price?: "CHEAP" | "REGULAR" | "EXPENSIVE";
+};
 export async function fetchRestaurants(): Promise<RestaurantCardType[]> {
   const restaurants = await prisma.restaurant.findMany({
     select: {
@@ -60,8 +73,12 @@ export async function fetchRestaurantMenu(slug: string) {
   return restaurant.items;
 }
 
-export async function searchRestaurantLocations(name: string | undefined) {
-  const restaurantSelection = {
+export function searchRestaurantLocations(searchParams: {
+  city?: string;
+  cuisine?: string;
+  price?: "CHEAP" | "REGULAR" | "EXPENSIVE";
+}) {
+  const select = {
     id: true,
     name: true,
     main_image: true,
@@ -70,15 +87,30 @@ export async function searchRestaurantLocations(name: string | undefined) {
     location: true,
     slug: true,
   };
-  if (!name) return prisma.restaurant.findMany({ select: restaurantSelection });
+  if (Object.keys(searchParams).length < 1)
+    return prisma.restaurant.findMany({ select });
+
+  const where: Query = {};
+  if (searchParams.city)
+    where["location"] = {
+      name: { equals: searchParams.city.toLowerCase().trim() },
+    };
+  if (searchParams.cuisine)
+    where["cuisine"] = { name: { equals: searchParams.cuisine } };
+  if (searchParams.price)
+    where["price"] = searchParams.price.toUpperCase() as PRICE;
   return prisma.restaurant.findMany({
-    where: {
-      location: {
-        name: {
-          equals: name.toLowerCase().trim(),
-        },
-      },
-    },
-    select: restaurantSelection,
+    select,
+    where,
   });
+}
+
+export async function fetchCuisineAndLocations() {
+  const locations = await prisma.location.findMany({
+    select: { name: true },
+  });
+  const cuisines = await prisma.cuisine.findMany({
+    select: { name: true },
+  });
+  return { locations, cuisines };
 }

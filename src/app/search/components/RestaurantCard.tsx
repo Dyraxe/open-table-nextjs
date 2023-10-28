@@ -1,6 +1,5 @@
 import Price from "@/app/components/Price";
 import { RestaurantCardType } from "@/app/services/restaurantsApi";
-import capitalizeFirstLetter from "@/app/utils/capitalizeFirst";
 import Link from "next/link";
 
 export default function RestaurantCard({
@@ -23,9 +22,9 @@ export default function RestaurantCard({
         </div>
         <div className="mb-9">
           <div className="font-light flex text-reg">
-            <p className="mr-4">{restaurant.cuisine.name}</p>
+            <p className="mr-4">{restaurant?.cuisine?.name}</p>
             <Price price={restaurant.price} />
-            <p className="mr-4 capitalize">{restaurant.location.name}</p>
+            <p className="mr-4 capitalize">{restaurant?.location?.name}</p>
           </div>
         </div>
         <div className="text-red-600">
