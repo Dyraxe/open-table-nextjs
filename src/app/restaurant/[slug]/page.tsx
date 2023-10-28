@@ -18,10 +18,10 @@ export default async function RestaurantDetails({
       <div className="bg-white w-[70%] rounded p-3 shadow">
         <RestaurantNavBar slug={restaurant.slug} />
         <Title title={restaurant.name} />
-        <Ratings />
+        <Ratings reviews={restaurant.review} />
         <Description description={restaurant.description} />
         <Images images={restaurant.images} />
-        <Reviews />
+        <Reviews reviews={restaurant.review} />
       </div>
       <div className="w-[27%] relative text-reg">
         <ReservationCard />

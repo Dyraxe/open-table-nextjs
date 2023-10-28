@@ -5,7 +5,12 @@ import { RestaurantCardType } from "../services/restaurantsApi";
 interface Props {
   restaurant: RestaurantCardType;
 }
+function renderReview(arrLength: number) {
+  if (arrLength > 1) return `${arrLength} reviews`;
+  if (arrLength === 1) return `${arrLength} review`;
+}
 export default function RestaurantCard({ restaurant }: Props) {
+  const reviewAmount = restaurant.review?.length;
   return (
     <div className="w-64 h-72 m-3 rounded overflow-hidden border cursor-pointer">
       <Link href={`/restaurant/${restaurant.slug}`}>
@@ -14,7 +19,9 @@ export default function RestaurantCard({ restaurant }: Props) {
           <h3 className="font-bold text-2xl mb-2">{restaurant.name}</h3>
           <div className="flex items-start">
             <div className="flex mb-2">*****</div>
-            <p className="ml-2">77 reviews</p>
+            <p className="ml-2">
+              {reviewAmount ? renderReview(reviewAmount) : "No reviews yet!"}
+            </p>
           </div>
           <div className="flex text-reg font-light capitalize">
             <p className=" mr-3">{restaurant.cuisine.name}</p>

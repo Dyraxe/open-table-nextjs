@@ -1,4 +1,4 @@
-import { Cuisine, Location, PRICE } from "@prisma/client";
+import { Cuisine, Location, PRICE, Review } from "@prisma/client";
 import prisma from "./prisma";
 
 export interface RestaurantCardType {
@@ -9,6 +9,7 @@ export interface RestaurantCardType {
   location: Location;
   price: PRICE;
   slug: string;
+  review?: Review[];
 }
 // type Test = { id: number; name: string; main_image: string; images: string[]; description: string; open_time: string; close_time: string; slug: string; price: PRICE; location_id: number; cuisine_id: number; created_at: Date; updated_at: Date; }
 interface Restaurant {
@@ -17,6 +18,7 @@ interface Restaurant {
   description: string;
   name: string;
   images: string[];
+  review: Review[];
 }
 type Query = {
   location?: {
@@ -42,6 +44,7 @@ export async function fetchRestaurants(): Promise<RestaurantCardType[]> {
       location: true,
       price: true,
       slug: true,
+      review: true,
     },
   });
 
@@ -57,6 +60,7 @@ export async function fetchRestaurantBySlug(slug: string): Promise<Restaurant> {
       description: true,
       name: true,
       images: true,
+      review: true,
     },
   });
 
@@ -76,7 +80,7 @@ export async function fetchRestaurantMenu(slug: string) {
 export function searchRestaurantLocations(searchParams: {
   city?: string;
   cuisine?: string;
-  price?: "CHEAP" | "REGULAR" | "EXPENSIVE";
+  price?: PRICE;
 }) {
   const select = {
     id: true,
@@ -86,6 +90,7 @@ export function searchRestaurantLocations(searchParams: {
     cuisine: true,
     location: true,
     slug: true,
+    review: true
   };
   if (Object.keys(searchParams).length < 1)
     return prisma.restaurant.findMany({ select });
