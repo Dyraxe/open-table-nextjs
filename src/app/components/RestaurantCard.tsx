@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Price from "./Price";
 import { RestaurantCardType } from "../services/restaurantsApi";
+import StarRating from "./StarRating";
 
 interface Props {
   restaurant: RestaurantCardType;
@@ -17,9 +18,9 @@ export default function RestaurantCard({ restaurant }: Props) {
         <img src={restaurant.main_image} alt="" className="w-full h-36" />
         <div className="p-1">
           <h3 className="font-bold text-2xl mb-2">{restaurant.name}</h3>
-          <div className="flex items-start">
-            <div className="flex mb-2">*****</div>
-            <p className="ml-2">
+          <div className="flex items-center">
+            <StarRating reviews={restaurant.review} />
+            <p className="ml-2 pt-1">
               {reviewAmount ? renderReview(reviewAmount) : "No reviews yet!"}
             </p>
           </div>

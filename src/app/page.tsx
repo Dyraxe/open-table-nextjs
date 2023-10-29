@@ -1,5 +1,6 @@
 import Header from "./components/Header";
 import RestaurantCard from "./components/RestaurantCard";
+import StarRating from "./components/StarRating";
 import { fetchRestaurants } from "./services/restaurantsApi";
 
 export default async function Home() {
